@@ -1,5 +1,8 @@
 
 import {useState, useEffect} from 'react'
+import Auth from "./components/Auth/Auth"
+import CreateBookmark from "./components/CreateBookmark/CreateBookmark"
+import BookmarkList from './components/BookmarkList/BookmarkList'
 
 export default function App() {
 
@@ -106,22 +109,12 @@ export default function App() {
         }
       }
 
-    // const listBookmarksByUser = async() => {
-    //     try {
-    //         const response = await fetch('/api/users/bookmarks')
-    //         const foundBookmarks = await response.json()
-    //         setBookmarks(foundBookmarks)
-    //     } catch (error) {
-    //         console.error(error)
-    //     }
-    // }
-
 
     const deleteBookmark = async(id) => {
         try {
             const response = await fetch(`/api/bookmarks/${id}`, {
                 method: "DELETE",
-                header: {
+                headers: {
                     "Content-Type" : "Application/json",
                     Authorization: `Bearer ${token}`
                 }
@@ -129,7 +122,7 @@ export default function App() {
             
             const foundBookmark = await response.json()
             const bookmarksCopy = [...bookmarks]
-            const index = bookmarksCopy.findIndex((bookmark) => bookmark._id === id)
+            const index = bookmarksCopy.findIndex(bookmark => bookmark._id === id)
             bookmarksCopy.splice(index, 1)
             setBookmarks(bookmarksCopy)
         } catch (error) {
@@ -141,8 +134,8 @@ export default function App() {
     const updateBookmark = async(id, updatedData) => {
         try {
             const response = await fetch(`/api/bookmarks/${id}`, {
-                method: "POST",
-                header: {
+                method: "PUT",
+                headers: {
                     "Content-Type" : "application/json",
                     Authorization: `Bearer ${token}`
                 },
@@ -151,7 +144,7 @@ export default function App() {
             
             const updatedBookmark = await response.json()
             const bookmarksCopy = [...bookmarks]
-            const index = bookmarksCopy.findIndex((bookmark) => bookmark._id === id)
+            const index = bookmarksCopy.findIndex(bookmark => bookmark._id === id)
             // important 
             bookmarksCopy[index] = {...bookmarksCopy[index], ...updatedData}
             setBookmarks(bookmarksCopy)
@@ -174,7 +167,23 @@ export default function App() {
     //target="_blank", it's used to specify that a link should open in a new browser window or tab when clicked. 
     return (
         <>
-        <h2>Login</h2>
+        <Auth 
+        login = {login}
+        signup = {signup}
+        credentials = {credentials}
+        handleChangeAuth ={handleChangeAuth}
+        />
+
+       <CreateBookmark
+        createBookmark = {createBookmark}
+        bookmark = {bookmark}
+        handleChange ={handleChange}/>
+
+        <BookmarkList 
+        bookmarks={bookmarks}
+        updateBookmark={updateBookmark}
+        deleteBookmark={deleteBookmark}/>
+        {/* <h2>Login</h2>
         <form onSubmit= {(e) => {
             e.preventDefault()
             login()
@@ -193,10 +202,10 @@ export default function App() {
             <input type="text"  placeholder="name" value={credentials.name} name="name" onChange = {handleChangeAuth}></input>
             <input type="text" placeholder="password" value={credentials.password} name="password" onChange = {handleChangeAuth}></input>
             <input type="submit" value ="Sign up as an New User"/>
-        </form>
+        </form> */}
 
-
-        <h2> Create a bookmark</h2>
+       
+        {/* <h2> Create a bookmark</h2>
         <form onSubmit = {(e) => {
             e.preventDefault()
             createBookmark()
@@ -205,8 +214,10 @@ export default function App() {
             <input type="text" placeholder="url" value={bookmark.url} name="url" onChange={handleChange}></input>
            
             <input type="submit" value="create Bookmark"/>
-        </form>
-        <ul>
+        </form> */}
+       
+
+        {/* <ul>
             {bookmarks.length ? bookmarks.map(bookmark => (
                 <li key = {bookmark._id}>
                        <h4>{bookmark.title}</h4>
@@ -214,7 +225,7 @@ export default function App() {
                 </li>
             )) : <>No Bookmark added</>}
         </ul>
-        
+         */}
         </>
     )
 }
